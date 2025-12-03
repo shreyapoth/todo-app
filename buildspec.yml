@@ -2,19 +2,32 @@ version: 0.2
 phases:
 install:
 commands:
-- echo install step...
+- echo Installing app dependencies...
+- curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.18.9/2020-11-02/bin/linux/amd64/kubectl
+- chmod +x ./kubectl
+- mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$PATH:$HOME/bin
+- echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
+- source ~/.bashrc
+- echo 'Check kubectl version'
+- kubectl version --short --client
 pre_build:
 commands:
+- echo Logging into Amazon EKS...
+- aws eks --region us-east-1 update-kubeconfig --name cicd-demo
+- echo check config
+- kubectl config view --minify
+- echo check kubectl access
+- kubectl get svc
 - echo logging in to AWS ECR...
 - $(aws ecr get-login --no-include-email --region us-east-1)
 build:
 commands:
-- echo build Docker image on `date`
-- cd src
-- docker build -t <image name>:latest .
-- docker tag <image name>:latest <ECR repository URI>:latest
+- docker build -t team-one-am .
 post_build:
 commands:
-- echo build Docker image complete `date`
-- echo push latest Docker images to ECR...
-- docker push <ECR repository URI>:latest
+- docker tag team-one-am 962804699607.dkr.ecr.us-west-2.amazonaws.com/team-one-am-repo:latest:latest
+- docker push 962804699607.dkr.ecr.us-west-2.amazonaws.com/team-one-am-repo:latest:latest
+- kubectl apply -f deployment.yaml
+- kubectl apply -f service.yaml
+- kubectl rollout restart -f deployment.yaml
+- kubectl get svc --all-namespaces
