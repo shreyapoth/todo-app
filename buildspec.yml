@@ -1,25 +1,24 @@
 version: 0.2
 phases:
-install:
-commands:
-- echo install step...
-pre_build:
-commands:
-- echo logging in to AWS ECR...
-- $(aws ecr get-login --no-include-email --region us-east-1)
-build:
-commands:
-- echo build Docker image on `date`
-- cd src
-- docker build -t team-one-am:latest .
-Auto-deploy your container to Fargate 9
-- docker tag team-one-am:latest <ECR repository URI>:latest
-post_build:
-commands:
-- echo build Docker image complete `date`
-- echo push latest Docker images to ECR...
-- docker push 962804699607.dkr.ecr.us-west-2.amazonaws.com/team-one-am-repo:latest:latest
-- echo Writing image definitions file...
-- printf '[{"name":"team-one-am-repo","imageUri":"962804699607.dkr.ecr.us-west-2.amazonaws.com/team-one-am-repo:latest:latest"}]' > imagedefinitions.json
-artifacts:
-files: imagedefinitions.json
+  install:
+    commands:
+      - echo install step...
+  pre_build:
+    commands:
+      - echo logging in to AWS ECR...
+      - aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 962804699607.dkr.ecr.us-west-2.amazonaws.com
+  build:
+    commands:
+      - echo build Docker image on `date`
+      - cd src
+      - docker build -t team-one-am:latest .
+      - docker tag team-one-am:latest 962804699607.dkr.ecr.us-west-2.amazonaws.com/team-one-am-repo:latest:latest:latest
+  post_build:
+    commands:
+      - echo build Docker image complete `date`
+      - echo push latest Docker images to ECR...
+      - docker push 962804699607.dkr.ecr.us-west-2.amazonaws.com/team-one-am-repo:latest:latest
+      - echo Writing image definitions file...
+      - printf '[{"name":"team-one-am-repo","imageUri":"962804699607.dkr.ecr.us-west-2.amazonaws.com/team-one-am-repo:latest:latest"}]' > imagedefinitions.json
+  artifacts:
+  files: imagedefinitions.json
