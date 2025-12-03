@@ -11,15 +11,15 @@ build:
 commands:
 - echo build Docker image on `date`
 - cd src
-- docker build -t <image name>:latest .
+- docker build -t team-one-am:latest .
 Auto-deploy your container to Fargate 9
-- docker tag <image name>:latest <ECR repository URI>:latest
+- docker tag team-one-am:latest <ECR repository URI>:latest
 post_build:
 commands:
 - echo build Docker image complete `date`
 - echo push latest Docker images to ECR...
-- docker push <ECR repository URI>:latest
+- docker push 962804699607.dkr.ecr.us-west-2.amazonaws.com/team-one-am-repo:latest:latest
 - echo Writing image definitions file...
-- printf '[{"name":"<container name>","imageUri":"<ECR repository URI>:latest"}]' > imagedefinitions.json
+- printf '[{"name":"team-one-am-repo","imageUri":"962804699607.dkr.ecr.us-west-2.amazonaws.com/team-one-am-repo:latest:latest"}]' > imagedefinitions.json
 artifacts:
 files: imagedefinitions.json
