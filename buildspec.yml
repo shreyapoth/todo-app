@@ -21,4 +21,5 @@ phases:
       - echo Writing image definitions file...
       - printf '[{"name":"team-one-am-repo","imageUri":"962804699607.dkr.ecr.us-west-2.amazonaws.com/team-one-am-repo:latest:latest"}]' > imagedefinitions.json
   artifacts:
-  files: imagedefinitions.json
+    files: 
+      - imagedefinitions.json
