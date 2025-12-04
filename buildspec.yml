@@ -12,9 +12,8 @@ phases:
   build:
     commands:
       - echo build Docker image on `date`
-      - cd src
-      - docker build -t team-one-am:latest .
-      - docker tag team-one-am:latest 962804699607.dkr.ecr.us-west-2.amazonaws.com/team-one-am-repo:latest
+      - docker build -t team-one-am-repo:latest .
+      - docker tag team-one-am-repo:latest 962804699607.dkr.ecr.us-west-2.amazonaws.com/team-one-am-repo:latest
   post_build:
     commands:
       - echo build Docker image complete `date`
@@ -22,6 +21,5 @@ phases:
       - docker push 962804699607.dkr.ecr.us-west-2.amazonaws.com/team-one-am-repo:latest
       - echo Writing image definitions file...
       - printf '[{"name":"team-one-am-repo","imageUri":"962804699607.dkr.ecr.us-west-2.amazonaws.com/team-one-am-repo:latest"}]' > imagedefinitions.json
-
-artifacts:
-  files: imagedefinitions.json
+  artifacts:
+    files: imagedefinitions.json
